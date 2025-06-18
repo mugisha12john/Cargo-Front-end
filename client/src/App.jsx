@@ -1,22 +1,19 @@
-import CallToAction from "./components/CallToAction.jsx"
-import Footer from "./components/Footer.jsx"
-import Home from "./components/Home.jsx"
-import Nav from "./components/Nav.jsx"
-import WhatourClientSay from "./components/WhatourClientSay.jsx"
-import WhatweDo from "./components/WhatweDo.jsx"
-import WhoweAre from "./components/WhoweAre.jsx"
-import WhychooseUs from "./components/WhychooseUs.jsx"
+
+import Homepage from "./pages/Homepage"
+import LoginPage from "./pages/LoginPage"
+import SignupPage from "./pages/SignupPage"
+import { BrowserRouter, Routes, Route} from 'react-router-dom';
 function App() {
   return (
     <>
-    <Nav></Nav>
-    <Home></Home>
-    <WhoweAre></WhoweAre>
-    <WhychooseUs></WhychooseUs>
-    <WhatweDo></WhatweDo>
-    <WhatourClientSay></WhatourClientSay>
-    <CallToAction></CallToAction>
-    <Footer></Footer>
+    <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Homepage/>} />
+      <Route path="/home" element={<Homepage/>} />
+      <Route path="/login" element={<LoginPage/>} />
+      <Route path="/signup" element={<SignupPage/>} />
+    </Routes>
+    </BrowserRouter>
     </>
   )
 }

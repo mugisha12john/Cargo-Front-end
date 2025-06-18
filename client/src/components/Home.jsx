@@ -9,7 +9,6 @@ function Home() {
           backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.6)), url(${image})`,
         }}
       >
-        {/* Centered content with safe horizontal padding */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full">
           <div className="container mx-auto px-4 md:px-8 text-white text-center">
             <h1 className="text-3xl md:text-5xl lg:text-7xl font-bold">Great Lake Logistics</h1>
