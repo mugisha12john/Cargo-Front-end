@@ -1,5 +1,6 @@
 import Home from "./components/Home.jsx"
 import Nav from "./components/Nav.jsx"
+import WhatweDo from "./components/WhatweDo.jsx"
 import WhoweAre from "./components/WhoweAre.jsx"
 import WhychooseUs from "./components/WhychooseUs.jsx"
 function App() {
@@ -9,6 +10,7 @@ function App() {
     <Home></Home>
     <WhoweAre></WhoweAre>
     <WhychooseUs></WhychooseUs>
+    <WhatweDo></WhatweDo>
     </>
   )
 }

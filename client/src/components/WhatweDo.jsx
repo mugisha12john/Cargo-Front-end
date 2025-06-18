@@ -1,54 +1,45 @@
+import { FaOpencart } from "react-icons/fa";
 import {
   FaBolt,
+  FaBoxOpen,
+  FaEarthAfrica,
+  FaFileCircleCheck,
   FaGlobe,
   FaHandshake,
   FaHeadset,
   FaLock,
   FaMoneyBill1Wave,
+  FaWarehouse,
 } from "react-icons/fa6";
 
-function WhychooseUs() {
+function WhatweDo() {
   return (
     <section className="px-4 py-12 lg:py-20 lg:px-20 flex flex-col items-center text-center">
       <div className="text-3xl md:text-5xl font-bold capitalize flex items-center gap-2 justify-center">
-        <span>why choose</span>
-        <h1 className="text-skyBlue">Us</h1>
+        <span>what</span>
+        <h1 className="text-skyBlue">we</h1>
+        <span>do</span>
       </div>
 
       <p className="text-sm md:text-lg font-medium mt-3 max-w-2xl text-center md:text-left">
-        At Great Hills Logistics, we’re committed to delivering your goods quickly, safely, and affordably — with customer satisfaction at the heart of what we do.
+        We offer reliable logistics and delivery solutions from international countries to Rwanda tailored to meet your needs
       </p>
       <div className="mt-12 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full max-w-6xl">
         {[
           {
-            icon: <FaHeadset />,
-            title: "24/7 User Support",
-            desc: "We’re always here for you day or night.",
+            icon: <FaEarthAfrica />,
+            title: "International Shipping",
+            desc: "Ship goods from major global cities to Rwanda with tracking and support.",
           },
           {
-            icon: <FaBolt />,
-            title: "Fast Delivery",
-            desc: "We ensure on time delivery, every time.",
+            icon: <FaFileCircleCheck />,
+            title: "Customs Clearance",
+            desc: "We handle the paperwork and processes so you don’t have to.",
           },
           {
-            icon: <FaHandshake />,
-            title: "Trusted Company",
-            desc: "Over 10 years of experience in logistics.",
-          },
-          {
-            icon: <FaMoneyBill1Wave />,
-            title: "Affordable Costs",
-            desc: "Get international service at local prices.",
-          },
-          {
-            icon: <FaGlobe />,
-            title: "Global Reach",
-            desc: "Shipping from multiple countries to Rwanda.",
-          },
-          {
-            icon: <FaLock />,
-            title: "Safe Shipping",
-            desc: "Your goods are handled with the utmost care.",
+            icon: <FaWarehouse />,
+            title: "Warehousing & Holding",
+            desc: "Short-term or long-term package storage available before delivery.",
           },
         ].map(({ icon, title, desc }, index) => (
           <div
@@ -67,4 +58,4 @@ function WhychooseUs() {
   );
 }
 
-export default WhychooseUs;
+export default WhatweDo;
