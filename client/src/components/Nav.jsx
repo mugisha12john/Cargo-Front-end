@@ -8,7 +8,8 @@ function Nav() {
     <header className="py-4 mx-4 shadow-md">
         <nav className="container mx-auto flex items-center justify-between px-4 relative">
             <div className="max-w-sm">
-                <img className="w-24 md:w-32" src={logo} alt="Logo" />
+                <Link to="/home"><img className="w-24 md:w-32" src={logo} alt="Logo" /></Link>
+                
             </div>
             <ul className="hidden md:flex gap-8 capitalize font-bold font-mono">
                 <li className='hover:text-skyBlue '><a href="#">Home</a></li>

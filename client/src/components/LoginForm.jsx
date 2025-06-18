@@ -1,6 +1,6 @@
 import google from "../assets/google.png";
 import microsoft from "../assets/microsoft.png";
-
+import { Link } from "react-router-dom";
 function LoginForm() {
   return (
     <section className="px-4 py-12 lg:py-20 lg:px-20 flex flex-col items-center text-center">
@@ -36,7 +36,7 @@ function LoginForm() {
         <div>
           Don't have an account?{" "}
           <span className="text-skyBlue font-semibold cursor-pointer">
-            Sign up
+            <Link to="/signup"> Sign up</Link>
           </span>
         </div>
         <div>
