@@ -5,6 +5,9 @@ import SignupPage from "./pages/SignupPage"
 import { BrowserRouter, Routes, Route} from 'react-router-dom';
 import Dashboard from "./components/manager/Manager";
 import AddFurniture from "./components/furniture/AddFurniture";
+import AllFurniture from "./components/furniture/AllFurniture";
+import LoadingScreen from "./components/Loading";
+import NotFound from "./components/NotFound";
 
 function App() {
   return (
@@ -12,11 +15,14 @@ function App() {
     <BrowserRouter>
     <Routes>
       <Route path="/" element={<Homepage/>} />
+      <Route path="*" element={<NotFound/>} />
       <Route path="/home" element={<Homepage/>} />
+     <Route path="/load" element={<LoadingScreen/>} />
       <Route path="/login" element={<LoginPage/>} />
       <Route path="/signup" element={<SignupPage/>} />
       <Route path="/manager" element={<Dashboard/>} />
       <Route path="/furniture" element={<AddFurniture/>} />
+      <Route path="/all-furniture" element={<AllFurniture/>} />      
     </Routes>
     </BrowserRouter>
     </>

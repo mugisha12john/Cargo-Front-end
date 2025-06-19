@@ -1,10 +1,16 @@
+import { useState } from 'react';
 import Header from '../manager/Header'
 import Footer from '../manager/ManagerFooter';
 import  Navigation  from '../manager/Navigation';
 function AddFurniture(){
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
  return(<>
-    <Header Status="Furniture"/>
-    <Navigation  currentPage="furniture" />
+    <Header toggleSidebar={toggleSidebar} Status="Furniture"/>
+    <Navigation isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} currentPage="furniture" />
     
     <div className="grid md:w-3/4 md:ml-32 lg:w-2/4 lg:ml-[35%] grid-cols-1 lg:grid-cols-1 gap-6 mb-8">
        <h1 className='text-center font-bold text-2xl'>Add Furniture</h1>
@@ -43,6 +49,12 @@ function AddFurniture(){
        </form>
     </div>
     <Footer></Footer>
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={toggleSidebar}
+        />
+      )}
  </>)
 }
 export default AddFurniture;
