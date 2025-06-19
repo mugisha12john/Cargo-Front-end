@@ -9,15 +9,16 @@ import {
   LogOut, 
   X,
 } from 'lucide-react';
-const Navigation = ({ isSidebarOpen, toggleSidebar }) => {
-  const menuItems = [
-    { icon: Home, label: 'Dashboard', active: true },
-    { icon: Package, label: 'Furniture', active: false },
-    { icon: Truck, label: 'Import/export', active: false },
-    { icon: BarChart3, label: 'Reports', active: false },
-    { icon: Settings, label: 'Setting', active: false },
-    { icon: LogOut, label: 'Logout', active: false },
-  ];
+const Navigation = ({ isSidebarOpen, toggleSidebar,currentPage }) => {
+const menuItems = [
+  { icon: Home, label: 'Dashboard', key: 'dashboard' },
+  { icon: Package, label: 'Furniture', key: 'furniture' },
+  { icon: Truck, label: 'Import/export', key: 'import-export' },
+  { icon: BarChart3, label: 'Reports', key: 'reports' },
+  { icon: Settings, label: 'Setting', key: 'settings' },
+  { icon: LogOut, label: 'Logout', key: 'logout' },
+];
+
 
   return (
     <div className={`fixed inset-y-0 left-0 z-50 w-80 bg-blue-100 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:fixed lg:inset-y-0`}>
@@ -58,9 +59,9 @@ const Navigation = ({ isSidebarOpen, toggleSidebar }) => {
             <button
               key={index}
               className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-left transition-colors ${
-                item.active 
-                  ? 'bg-blue-500 text-white' 
-                  : 'text-gray-700 hover:bg-blue-200'
+              currentPage === item.key ? 'bg-skyHover text-white' 
+                    : 'text-gray-700 duration-300 ease-out hover:text-white hover:bg-skyHover'
+
               }`}
             >
               <item.icon className="w-5 h-5" />

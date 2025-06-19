@@ -77,11 +77,11 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      <Navigation isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      <Navigation isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} currentPage="dashboard" />
 
 
       <div className="flex-1 flex flex-col min-w-0">
-        <Header toggleSidebar={toggleSidebar} />
+        <Header toggleSidebar={toggleSidebar} Status="Dashboard" />
         <main className="flex-1 p-6">
           <StatsGrid />
           <div className="grid md:w-3/4 md:ml-32 lg:w-3/4 lg:ml-[25%] grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
