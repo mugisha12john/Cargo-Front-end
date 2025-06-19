@@ -5,7 +5,7 @@ import {
   User,
   Menu,
 } from 'lucide-react';
-const Header = ({ toggleSidebar }) => {
+const Header = ({ toggleSidebar,Status }) => {
   return (
     <header className="sticky top-0 z-40 md:w-4/5 md:ml-24 lg:w-4/5 lg:ml-72  bg-white shadow-sm border-b border-gray-200 px-6 py-4">
       <div className="flex items-center justify-between">
@@ -17,8 +17,8 @@ const Header = ({ toggleSidebar }) => {
             <Menu className="w-6 h-6" />
           </button>
           <div>
-            <h1 className="text-2xl font-bold text-black">Dashboard</h1>
-            <p className="text-gray-600">Manager/dashboard</p>
+            <h1 className="text-2xl font-bold text-black">{Status}</h1>
+            <p className="text-gray-600">Manager/{Status}</p>
           </div>
         </div>
         

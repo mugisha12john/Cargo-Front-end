@@ -4,6 +4,8 @@ import LoginPage from "./pages/LoginPage"
 import SignupPage from "./pages/SignupPage"
 import { BrowserRouter, Routes, Route} from 'react-router-dom';
 import Dashboard from "./components/manager/Manager";
+import AddFurniture from "./components/furniture/AddFurniture";
+
 function App() {
   return (
     <>
@@ -14,9 +16,9 @@ function App() {
       <Route path="/login" element={<LoginPage/>} />
       <Route path="/signup" element={<SignupPage/>} />
       <Route path="/manager" element={<Dashboard/>} />
+      <Route path="/furniture" element={<AddFurniture/>} />
     </Routes>
     </BrowserRouter>
-    
     </>
   )
 }

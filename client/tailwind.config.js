@@ -8,7 +8,8 @@ module.exports = {
     extend: {
       colors: {
         skyBlue: '#66A3FF',
-        skyHover: '#215CB5'
+        skyHover: '#215CB5',
+        inputColor:'#D9D9D9'
       },
     },
   },
