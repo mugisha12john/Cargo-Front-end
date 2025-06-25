@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import {  useState } from 'react';
 import { 
   LucideSofa,
   FolderInput,
@@ -29,6 +29,7 @@ const StatCard = ({ number, label, icon: Icon,iconimg, color,bgimg }) => (
 
 
 const StatsGrid = () => {
+
   return (
     <div className="grid grid-cols-1 md:w-3/4 md:ml-32 lg:w-3/4 lg:ml-[25%]  md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       <StatCard 
