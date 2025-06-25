@@ -1,9 +1,10 @@
-
+import { useNavigate } from 'react-router-dom';
 
 import { 
   Home, 
   Package, 
   Truck, 
+  TruckElectric,
   BarChart3, 
   Settings, 
   LogOut, 
@@ -11,14 +12,15 @@ import {
 } from 'lucide-react';
 const Navigation = ({ isSidebarOpen, toggleSidebar,currentPage }) => {
 const menuItems = [
-  { icon: Home, label: 'Dashboard', key: 'dashboard' },
-  { icon: Package, label: 'Furniture', key: 'furniture' },
-  { icon: Truck, label: 'Import/export', key: 'import-export' },
+  { icon: Home, label: 'Dashboard', key: 'manager' },
+  { icon: Package, label: 'Furniture', key: 'all-furniture' },
+  { icon: Truck, label: 'Import', key: 'import' },
+  { icon: TruckElectric, label: 'Export', key: 'export' },
   { icon: BarChart3, label: 'Reports', key: 'reports' },
   { icon: Settings, label: 'Setting', key: 'settings' },
   { icon: LogOut, label: 'Logout', key: 'logout' },
 ];
-
+const navigate = useNavigate();
 
   return (
     <div className={`fixed inset-y-0 left-0 z-50 w-80 bg-blue-100 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:fixed lg:inset-y-0`}>
@@ -57,12 +59,13 @@ const menuItems = [
         <nav className="px-6 space-y-2 flex-1 overflow-y-auto">
           {menuItems.map((item, index) => (
             <button
-              key={index}
-              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-left transition-colors ${
-              currentPage === item.key ? 'bg-skyHover text-white' 
-                    : 'text-gray-700 duration-300 ease-out hover:text-white hover:bg-skyHover'
-
-              }`}
+    key={index}
+    onClick={() => navigate(`/${item.key}`)}
+    className={`w-full flex items-center space-x-3 px-2 py-2 rounded-xl text-left transition-colors ${
+      currentPage === item.label.toLowerCase()
+        ? 'bg-skyHover text-white'
+        : 'text-gray-700 duration-300 ease-out hover:text-white hover:bg-skyHover'
+    }`}
             >
               <item.icon className="w-5 h-5" />
               <span className="font-medium">{item.label}</span>

@@ -1,17 +1,66 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 import Header from '../manager/Header'
 import Footer from '../manager/ManagerFooter';
 import  Navigation  from '../manager/Navigation';
 import { ChevronsUpDown, CirclePlus,Search, Trash2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
-function AddFurniture(){
+import { Link, useNavigate } from 'react-router-dom';
+import ConfirmModal from '../import/Confirm';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import LoadingScreen from '../Loading';
+
+function AllFurniture(){
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isLoading,setLoading] = useState(true)
+  const [Furniture,setFurniture] = useState([])
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit] = useState(8); 
+  const [showModal, setShowModal] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [clickedItem,setclickedItem] = useState([])
   const URL = import.meta.env.VITE_GET_ALL_FURNITURE
+  const navigate= useNavigate()
+  useEffect(()=>{
+      const fetchData = async () => {
+        try {
+          const res = await axios.get(`${URL}/pagination?page=${currentPage}&limit=${limit}`);
+          setLoading(false)
+          setFurniture(res.data.data)
+          setTotalPages(res.data.pagination.totalPages)
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+
+      fetchData();
+  },[currentPage])
+   
+  const handleDeleteClick = (item)=>{
+    setclickedItem(item)
+    setShowModal(true)
+  }
+    const deleteFurniture = async () => {
+    try {
+      await axios.delete(`${URL}/${clickedItem.furnitureid}`);
+      toast.success(`Furniture data deleted successfully!`);
+      setFurniture((prev) => prev.filter((i) => i.furnitureid !== clickedItem.furnitureid));
+      console.log(clickedItem.furnitureid)
+    } catch (error) {
+        console.log(error)
+      toast.error('Failed to delete furniture data. Please try again.');
+    }
+    setShowModal(false);
+  };
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
  return(<>
-    <Header toggleSidebar={toggleSidebar} Status="Furniture"/>
+ <ToastContainer/>
+ {isLoading ? <LoadingScreen/> : 
+    <div>
+    <Header toggleSidebar={toggleSidebar} Status="Furniture" />
     <Navigation isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} currentPage="furniture" />
     
     <div className="grid  md:w-3/4 md:ml-32 lg:w-2/3 lg:ml-[25%] grid-cols-1 lg:grid-cols-1 gap-6 mb-8">
@@ -49,7 +98,7 @@ function AddFurniture(){
                 </th>
                 <th className="px-4 py-2 border-b">
                 <div className="flex items-center gap-1">
-                    <span>Owner name</span>
+                    <span>Recorded At</span>
                     <ChevronsUpDown className="w-4 h-4 text-gray-500" />
                 </div>
                 </th>
@@ -80,31 +129,75 @@ function AddFurniture(){
             </tr>
             </thead>
         <tbody>
-          <tr className="border-b-2 border-gray-300  cursor-pointer hover:bg-gray-200">
-            <td className="px-4 py-2">1</td>
-            <td className="px-4 py-2">Cupboard</td>
-            <td className="px-4 py-2">Musafiri Eric</td>
-            <td className="px-4 py-2">N/A</td>
-            <td className="px-4 py-2">4</td>
-            <td className="px-4 py-2">Available</td>
-            <td className="px-4 py-2">
-              <Trash2 className="text-red-600 cursor-pointer" />
-            </td>
-          </tr>
-          <tr className="border-b-2 border-gray-300 cursor-pointer hover:bg-gray-200">
-            <td className="px-4 py-2">1</td>
-            <td className="px-4 py-2">Cupboard</td>
-            <td className="px-4 py-2">Musafiri Eric</td>
-            <td className="px-4 py-2">N/A</td>
-            <td className="px-4 py-2">4</td>
-            <td className="px-4 py-2">Available</td>
-            <td className="px-4 py-2">
-              <Trash2 className="text-red-600 cursor-pointer" />
-            </td>
-          </tr>
+          {Furniture.length === 0 ? <tr><td colSpan={7} className='text-center capitalize font-light text-xl'>no furniture found</td></tr> :
+          Furniture.map((item,index)=>{
+           
+            return(<> 
+              <tr key={item.furnitureid}  className="border-b">
+                  <td className="px-4 py-2">{(currentPage - 1) * limit + index + 1}</td>
+                  <td className="px-4 py-2" onClick={()=>{navigate('/furniture/edit')}}>{item.furniturename}</td>
+                  <td className="px-4 py-2" onClick={()=>{navigate('/furniture/edit')}}>{new Date(item.createdat).toLocaleString()}</td>
+                  <td className="px-4 py-2" onClick={()=>{navigate('/furniture/edit')}}>{item.type}</td>
+                  <td className="px-4 py-2">{item.quantity}</td>
+                  <td className="px-4 py-2">{item.status}</td>
+                    <td className="px-4 py-2" >
+                  <Trash2 onClick={()=>{handleDeleteClick(item)}} className="text-red-600 cursor-pointer" />
+                  </td>
+              </tr>
+            </>)
+          })
+          }
+        
         </tbody>
       </table>
+      <div className="flex justify-center mt-6 gap-2 flex-wrap">
+        <button
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+          className="px-3 py-1 rounded bg-gray-300 hover:bg-gray-400 disabled:opacity-50"
+        >
+          Prev
+        </button>
+
+  
+        {[...Array(totalPages)].map((_, index) => {
+          
+          return (
+            <button
+              key={index + 1}
+              onClick={() => setCurrentPage(index + 1)}
+              className={`px-3 py-1 rounded ${
+                currentPage === index + 1
+                  ? 'bg-skyBlue text-white'
+                  : 'bg-gray-100 hover:bg-gray-300'
+              }`}
+            >
+              {index + 1}
+            </button>
+          );
+        })}
+
+        <button
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage(prev => prev + 1)}
+          className="px-3 py-1 rounded bg-gray-300 hover:bg-gray-400 disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
+
+      <p className="text-center mt-2 text-gray-500">
+        Page {currentPage} of {totalPages}
+      </p>
     </div>    
+      <div>
+        <ConfirmModal
+          show={showModal}
+          onClose={() => setShowModal(false)}
+          onConfirm={deleteFurniture}
+          message="Do you really want to delete this Furniture data?"
+        />
+      </div>
     </div>
     <Footer></Footer>
       {isSidebarOpen && (
@@ -113,6 +206,7 @@ function AddFurniture(){
           onClick={toggleSidebar}
         />
       )}
+</div>}
  </>)
 }
-export default AddFurniture;
+export default AllFurniture;

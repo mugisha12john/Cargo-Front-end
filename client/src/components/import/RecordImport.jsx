@@ -12,16 +12,20 @@ import { useNavigate } from 'react-router-dom';
 
 function AddImport(){
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const FURN_URL = import.meta.env.VITE_GET_ALL_FURNITURE;
     const MGR_URL = import.meta.env.VITE_GET_ALL_MANAGER;
-    const URL = import.meta.env.VITE_GET_ALL_FURNITURE;
+    const URL = import.meta.env.VITE_GET_ALL_IMPORT;
+      const [furnitureList, setFurnitureList] = useState([]);
   const [managerList, setManagerList] = useState([]);
 
     useEffect(()=>{
         const fetch = async ()=>{
         try{
-         const [mgrRes] = await Promise.all([
+         const [furnRes, mgrRes] = await Promise.all([
+          axios.get(`${FURN_URL}`),
           axios.get(MGR_URL)
         ]);
+        setFurnitureList(furnRes.data.data);
         setManagerList(mgrRes.data.data);
         } catch(error){
             console.log(error)
@@ -32,12 +36,12 @@ function AddImport(){
     },[]) 
     {/*  form */}
     const schema = yup.object().shape({
-        furniturename:yup.string().typeError("please select furniture name!").required("furniture name required"),
-        type:yup.string().typeError('Please enter furniture type').required("furniture type required"),
+        furnitureid:yup.number().typeError("please select furniture name!").required("furniture name required"),
+        impdate:yup.date().typeError('Please enter a valid date').required("importdate required"),
         quantity:yup.number().typeError("quantity must be number").positive("number must be greater then zero").integer("must be integer number").required("quantity is required"),
-        status:yup.string().required("furniture status  is required"),
+        supplierName:yup.string().required("Supplier name is required"),
         managerid:yup.number().typeError("please select manager name!").required("manager name required"),
-        confirmRecord:yup.boolean().oneOf([true], "you must agree before to add this furniture data"),
+        confirmRecord:yup.boolean().oneOf([true], "you must agree to record this import"),
 
     })
     const {register,handleSubmit, formState : {errors}} = useForm({
@@ -48,21 +52,20 @@ const onSubmit = async (data,e) => {
     e.preventDefault();
     try {
         const payload = {
-        furniturename: data.furniturename,
-        type: data.type,
+        furnitureid: parseInt(data.furnitureid),
+        impdate: data.impdate,
         quantity: parseInt(data.quantity),
-        status: data.status,
+        supplier: data.supplierName,
         managerid: parseInt(data.managerid),
         };
-        console.log(payload)
       await axios.post(`${URL}/`, payload);
-      toast.success("furniture data recorded successfully!");
+      toast.success("Import recorded successfully!");
           setTimeout(() => {
-      navigate('/all-furniture');
+      navigate('/import');
     }, 6000);
     } catch (err) {
       console.error("record error:", err);
-      toast.error("Failed to record furniture data");
+      toast.error("Failed to record import");
     }
   };
   const toggleSidebar = () => {
@@ -70,30 +73,35 @@ const onSubmit = async (data,e) => {
   };
  return(<>
     <ToastContainer />
-    <Header toggleSidebar={toggleSidebar} Status="Furniture"/>
-    <Navigation isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} currentPage="furniture" />
+    <Header toggleSidebar={toggleSidebar} Status="Import"/>
+    <Navigation isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} currentPage="import" />
     
     <div className="grid md:w-3/4 md:ml-32 lg:w-2/4 lg:ml-[35%] grid-cols-1 lg:grid-cols-1 gap-6 mb-8">
-       <h1 className='text-center font-bold text-2xl mt-12'>Add Furniture</h1>
+       <h1 className='text-center font-bold text-2xl mt-12'>Record Import</h1>
        <form className='ml-12' onSubmit={handleSubmit(onSubmit)}>
         <div className='grid lg:grid-cols-2'>
             <div className='mt-2'>
                 <div >Furniture Name</div>
                 
-                <input
+                <select
                  className='border-none border-black px-2 py-2 w-4/5 rounded-xl bg-inputColor'
-                 {...register("furniturename")}
-                /> 
-                <p className="text-red-500 capitalize text-sm mt-5">{errors.furniturename?.message}</p>
+                 {...register("furnitureid")}
+                 > 
+                 <option value="">Select furniture</option>
+                    {furnitureList.map(f=>{
+                        return(<option value={f.furnitureid} key={f.furnitureid}>{f.furniturename}</option>)
+                    })}
+                </select>
+                <p className="text-red-500 capitalize text-sm mt-5">{errors.furnitureid?.message}</p>
             </div>
             <div className='mt-4'>
-                <div>Furniture Type</div>
+                <div>Import Date</div>
                 <input 
-                type="text" 
+                type="datetime-local" 
                 className='border-none border-black px-2 py-2 w-4/5 rounded-xl bg-inputColor'
-                {...register("type")}
+                {...register("impdate")}
                 />
-                <p className="text-red-500 capitalize text-sm mt-5">{errors.type?.message}</p>
+                <p className="text-red-500 capitalize text-sm mt-5">{errors.impdate?.message}</p>
             </div>
             <div className='mt-4'>
                 <div>Quantity</div>
@@ -105,13 +113,13 @@ const onSubmit = async (data,e) => {
                 <p className="text-red-500 capitalize text-sm mt-5">{errors.quantity?.message}</p>
             </div>
             <div className='mt-4'>
-                <div>Status</div>
+                <div>Supplier Name</div>
                 <input 
                 type="text"
                 className='border-none border-black px-2 py-2 w-4/5 rounded-xl bg-inputColor'
-                {...register("status")}
+                {...register("supplierName")}
                 />
-                <p className="text-red-500 capitalize text-sm mt-5">{errors.status?.message}</p>
+                <p className="text-red-500 capitalize text-sm mt-5">{errors.supplierName?.message}</p>
             </div>
             <div className='mt-4'>
                 <div>Manager</div>
@@ -132,7 +140,7 @@ const onSubmit = async (data,e) => {
               <div className='flex'>
                 <div className='mt-4 flex gap-4'>
                 <input type="checkbox"  {...register("confirmRecord")} />
-                <div>Agree to add this Furniture receord</div>
+                <div>Agree to Record this import Furniture</div>
             </div>
             </div>
             <div>
@@ -142,7 +150,7 @@ const onSubmit = async (data,e) => {
         
         <input 
         type="submit" 
-        value="Add furniture" 
+        value="Record Import" 
         className='mt-12 text-center px-2 py-2 w-4/5 rounded-xl cursor-pointer bg-skyBlue duration-300 ease-in text-white font-bold text-xl hover:bg-skyHover'
         />
        </form>

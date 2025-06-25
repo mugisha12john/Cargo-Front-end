@@ -6,6 +6,7 @@ import {
   Menu,
 } from 'lucide-react';
 const Header = ({ toggleSidebar,Status }) => {
+
   return (
     <header className="sticky top-0 z-40 md:w-4/5 md:ml-24 lg:w-4/5 lg:ml-72  bg-white shadow-sm border-b border-gray-200 px-6 py-4">
       <div className="flex items-center justify-between">
@@ -28,6 +29,7 @@ const Header = ({ toggleSidebar,Status }) => {
             <input
               type="text"
               placeholder="Search..."
+           
               className="pl-10 pr-4 py-2 bg-skyBlue text-white placeholder-blue-200 rounded-full focus:outline-none focus:ring-2"
             />
           </div>
