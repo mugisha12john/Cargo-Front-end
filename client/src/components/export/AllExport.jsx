@@ -10,16 +10,16 @@ import ConfirmModal from './Confirm';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Navigate } from 'react-router-dom';
-function AllImport() {
+function AllExport() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLoading, setLoading] = useState(true);
-  const [Furniture, setFurniture] = useState([]);
+  const [Export, setExport] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [limit] = useState(8);
+  const [limit] = useState(6);
   const [totalPages, setTotalPages] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  const URL = import.meta.env.VITE_GET_ALL_IMPORT;
+  const URL = import.meta.env.VITE_GET_ALL_EXPORT;
   const navigate = useNavigate();
   const handleDeleteClick = (item) => {
     setSelectedItem(item);
@@ -28,12 +28,12 @@ function AllImport() {
 
   const deleteFurniture = async () => {
     try {
-      await axios.delete(`${URL}/${selectedItem.importid}`);
-      toast.success(`Import record deleted successfully!`);
-      setFurniture((prev) => prev.filter((f) => f.importid !== selectedItem.importid));
+      await axios.delete(`${URL}/${selectedItem.exportid}`);
+      toast.success(`Export record deleted successfully!`);
+      setExport((prev) => prev.filter((f) => f.exportid !== selectedItem.exportid));
     } catch (error) {
         console.log(error)
-      toast.error('Failed to delete import record. Please try again.');
+      toast.error('Failed to delete export record. Please try again.');
     }
     setShowModal(false);
   };
@@ -41,8 +41,8 @@ function AllImport() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`${URL}/pages?page=${currentPage}&limit=${limit}`);
-        setFurniture(res.data.data);
+        const res = await axios.get(`${URL}/page?page=${currentPage}&limit=${limit}`);
+        setExport(res.data.data);
         setTotalPages(res.data.pagination.totalPages);
         setLoading(false);
       } catch (error) {
@@ -51,7 +51,6 @@ function AllImport() {
     };
     fetchData();
   }, [currentPage]);
-
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -63,12 +62,12 @@ function AllImport() {
         <LoadingScreen />
       ) : (
         <div>
-          <Header toggleSidebar={toggleSidebar} Status="Import" />
-          <Navigation isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} currentPage="import" />
+          <Header toggleSidebar={toggleSidebar} Status="Export" />
+          <Navigation isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} currentPage="export" />
 
           <div className="grid md:w-3/4 md:ml-32 lg:w-2/3 lg:ml-[25%] grid-cols-1 lg:grid-cols-1 gap-6 mb-8">
             <div className="grid grid-cols-1 lg:mt-4 lg:grid-cols-2 lg:place-items-center md:grid-cols-2 md:place-items-center">
-              <h1 className="text-center font-bold md:text-xl lg:text-2xl text-2xl">All Imported Furnitures</h1>
+              <h1 className="text-center font-bold md:text-xl lg:text-2xl text-2xl">All Exported Furnitures</h1>
               <div className="ml-14 mt-2 lg:hidden md:hidden relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white w-5 h-5" />
                 <input
@@ -78,10 +77,10 @@ function AllImport() {
                 />
               </div>
               <Link
-                to="/import/record"
+                to="/export/add"
                 className="text-center lg:text-base lg:mt-0 lg:w-48 md:text-xl ml-14 md:w-56 mt-4 flex space-x-4 px-2 py-2 w-2/3 rounded-xl cursor-pointer bg-skyBlue duration-300 ease-in text-white font-bold text-xl hover:bg-skyHover"
               >
-                <ClipboardPlus className="size-5" /> <h1>Record Import</h1>
+                <ClipboardPlus className="size-5" /> <h1>Record Export</h1>
               </Link>
             </div>
 
@@ -103,7 +102,7 @@ function AllImport() {
                     </th>
                     <th className="px-4 py-2 border-b">
                       <div className="flex items-center gap-1">
-                        <span>Imported At</span>
+                        <span>Exported At</span>
                         <ChevronsUpDown className="w-4 h-4 text-gray-500" />
                       </div>
                     </th>
@@ -115,7 +114,7 @@ function AllImport() {
                     </th>
                     <th className="px-4 py-2 border-b">
                       <div className="flex items-center gap-1">
-                        <span>Supplier</span>
+                        <span>Destination</span>
                         <ChevronsUpDown className="w-4 h-4 text-gray-500" />
                       </div>
                     </th>
@@ -134,20 +133,20 @@ function AllImport() {
                   </tr>
                 </thead>
                 <tbody>
-                  {Furniture.length === 0 ? (
+                  {Export.length === 0 ? (
                     <tr>
                       <td colSpan={7} className="text-center capitalize font-light text-xl">
-                        no imported record found
+                        no exported record found
                       </td>
                     </tr>
                   ) : (
-                    Furniture.map((item, index) => (
-                      <tr key={item.importid} className="border-b">
+                    Export.map((item, index) => (
+                      <tr key={item.exportid} className="border-b">
                         <td className="px-4 py-2">{(currentPage - 1) * limit + index + 1}</td>
-                        <td className="px-4 py-2 cursor-pointer" onClick={()=>navigate(`/import/modify/${item.importid}`)}>{item.furniturename}</td>
-                        <td className="px-4 py-2">{new Date(item.importdate).toLocaleString()}</td>
+                        <td className="px-4 py-2 cursor-pointer" onClick={()=>navigate(`/export/modify/${item.exportid}`)}>{item.furniturename}</td>
+                        <td className="px-4 py-2">{new Date(item.exportdate).toLocaleString()}</td>
                         <td className="px-4 py-2">{item.quantity}</td>
-                        <td className="px-4 py-2">{item.supplier}</td>
+                        <td className="px-4 py-2">{item.destination}</td>
                         <td className="px-4 py-2">{item.fullname}</td>
                         <td className="px-4 py-2">
                           <Trash2 onClick={() => handleDeleteClick(item)} className="text-red-600 cursor-pointer" />
@@ -195,7 +194,7 @@ function AllImport() {
                 show={showModal}
                 onClose={() => setShowModal(false)}
                 onConfirm={deleteFurniture}
-                message="Do you really want to delete this Imported record?"
+                message="Do you really want to delete this exported record?"
               />
             </div>
           </div>
@@ -211,4 +210,4 @@ function AllImport() {
   );
 }
 
-export default AllImport;
+export default AllExport;

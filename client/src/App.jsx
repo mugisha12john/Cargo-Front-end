@@ -12,6 +12,9 @@ import AllImport from "./components/import/AllImport";
 import ModifyImport from "./components/import/ModifyImport";
 import AddImport from "./components/import/RecordImport";
 import UpdateFurniture from "./components/furniture/UpdateFurniture";
+import AllExport from "./components/export/AllExport";
+import ModifyExport from "./components/export/ModifyExport";
+import AddExport from "./components/export/RecordExport";
 
 function App() {
   return (
@@ -29,12 +32,17 @@ function App() {
       {/* furnitures routes */}
       <Route path="/furniture" element={<AddFurniture/>} />
       <Route path="/all-furniture" element={<AllFurniture/>} />     
-      <Route path="/furniture/edit" element={<UpdateFurniture/>} />  
+      <Route path="/furniture/edit/:id" element={<UpdateFurniture/>} />  
 
       {/* import routes */}
       <Route path="/import" element={<AllImport/>} />  
       <Route path="/import/modify/:id" element={<ModifyImport/>} />
       <Route path="/import/record" element={<AddImport/>} />  
+
+      {/* export routes */}
+      <Route path="/export" element={<AllExport/>} />  
+      <Route path="/export/modify/:id" element={<ModifyExport/>} />
+      <Route path="/export/add" element={<AddExport/>} />  
     </Routes>
     </BrowserRouter>
     </>
