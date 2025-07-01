@@ -135,9 +135,9 @@ function AllFurniture(){
             return(<> 
               <tr key={item.furnitureid}  className="border-b">
                   <td className="px-4 py-2">{(currentPage - 1) * limit + index + 1}</td>
-                  <td className="px-4 py-2" onClick={()=>{navigate('/furniture/edit')}}>{item.furniturename}</td>
-                  <td className="px-4 py-2" onClick={()=>{navigate('/furniture/edit')}}>{new Date(item.createdat).toLocaleString()}</td>
-                  <td className="px-4 py-2" onClick={()=>{navigate('/furniture/edit')}}>{item.type}</td>
+                  <td className="px-4 py-2 cursor-pointer" onClick={()=>{navigate(`/furniture/edit/${item.furnitureid}`)}}>{item.furniturename}</td>
+                  <td className="px-4 py-2 cursor-pointer" onClick={()=>{navigate(`/furniture/edit/${item.furnitureid}`)}}>{new Date(item.createdat).toLocaleString()}</td>
+                  <td className="px-4 py-2 cursor-pointer" onClick={()=>{navigate(`/furniture/edit/${item.furnitureid}`)}}>{item.type}</td>
                   <td className="px-4 py-2">{item.quantity}</td>
                   <td className="px-4 py-2">{item.status}</td>
                     <td className="px-4 py-2" >
@@ -185,10 +185,6 @@ function AllFurniture(){
           Next
         </button>
       </div>
-
-      <p className="text-center mt-2 text-gray-500">
-        Page {currentPage} of {totalPages}
-      </p>
     </div>    
       <div>
         <ConfirmModal

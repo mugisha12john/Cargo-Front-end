@@ -10,27 +10,30 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-function UpdateFurniture() {
+
+function ModifyExport() {
   const { id } = useParams();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLoading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [furnitureList, setFurnitureList] = useState([]);
   const [managerList, setManagerList] = useState([]);
   const navigate = useNavigate()
-  const URL = import.meta.env.VITE_GET_ALL_FURNITURE;
+  const URL = import.meta.env.VITE_GET_ALL_EXPORT;
+  const FURN_URL = import.meta.env.VITE_GET_ALL_FURNITURE;
   const MGR_URL = import.meta.env.VITE_GET_ALL_MANAGER;
 
   const schema = yup.object().shape({
-    furniturename: yup.string().required("Please select a furniture"),
-    type: yup.string().required("furniture type is required"),
+    furnitureid: yup.string().required("Please select a furniture"),
+    expdate: yup.string().required("Import date is required"),
     quantity: yup
       .number()
       .typeError("Quantity must be a number")
       .positive("Must be greater than 0")
       .required("Quantity is required"),
-    status: yup.string().required("status is required"),
+    destination: yup.string().required("destination location is required"),
     managerid: yup.string().required("Please select a manager"),
-     confirmUpdate: yup.boolean().oneOf([true], "You must agree before updating"),
+    confirmUpdate: yup.boolean().oneOf([true], "You must agree before updating"),
   });
 
   const {
@@ -41,19 +44,22 @@ function UpdateFurniture() {
   } = useForm({
     resolver: yupResolver(schema),
   });
+
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        const [importRes, mgrRes] = await Promise.all([
+        const [expRes, furnRes, mgrRes] = await Promise.all([
           axios.get(`${URL}/${id}`),
+          axios.get(FURN_URL),
           axios.get(MGR_URL),
         ]);
-        const importData = importRes.data.data[0];
-        setValue("furniturename", importData.furniturename);
-        setValue("type", importData.type);
-        setValue("quantity", importData.quantity);
-        setValue("status", importData.status);
-        setValue("managerid", importData.managerid);
+        const expData = expRes.data.data[0];
+        setValue("furnitureid", expData.furnitureid);
+        setValue("expdate", new Date(expData.exportdate).toISOString().slice(0, 16));
+        setValue("quantity", expData.quantity);
+        setValue("destination", expData.destination);
+        setValue("managerid", expData.managerid);
+        setFurnitureList(furnRes.data.data);
         setManagerList(mgrRes.data.data);
         setLoading(false);
       } catch (err) {
@@ -71,20 +77,20 @@ function UpdateFurniture() {
   const onSubmit = async (data) => {
     try {
         const payload = {
-        furniturename: data.furniturename,
-        type: data.type,
+        furnitureid: parseInt(data.furnitureid),
+        expdate: data.expdate,
         quantity: parseInt(data.quantity),
-        status: data.status,
+        destination: data.destination,
         managerid: parseInt(data.managerid),
         };
       await axios.put(`${URL}/${id}`, payload);
-      toast.success("Furniture data Edited successfully!");
-      setTimeout(() => {
-        navigate('/all-furniture')
-      }, 4500);
+      toast.success("export info updated successfully!");
+      setTimeout(()=>{
+      navigate('/export')
+      },6000)
     } catch (err) {
-      console.error("Edit error:", err);
-      toast.error("Failed to Edit furniture data!");
+      console.error("Update error:", err);
+      toast.error("Failed to update export");
     }
   };
 
@@ -95,19 +101,19 @@ function UpdateFurniture() {
         <LoadingScreen />
       ) : (
         <>
-          <Header toggleSidebar={toggleSidebar} Status="Furniture" />
+          <Header toggleSidebar={toggleSidebar} Status="Export" />
           <Navigation
             isSidebarOpen={isSidebarOpen}
             toggleSidebar={toggleSidebar}
-            currentPage="furniture"
+            currentPage="export"
           />
 
           <div className="grid md:w-3/4 md:ml-32 lg:w-2/4 lg:ml-[35%] grid-cols-1 gap-6 mb-8">
             <div className="flex gap-4 flex-col md:flex-row justify-between mt-12">
-              <h1 className="text-center font-bold text-2xl">Edit  Furnitures Data</h1>
+              <h1 className="text-center font-bold text-2xl">Modify Exported Furniture</h1>
               <button
                 onClick={() => setIsEditing(!isEditing)}
-                className={`px-4 py-2 rounded-lg font-semibold ${
+                className={`px-4 py-2 w-2/4 ml-24 md:w-32 lg:w-48 rounded-lg font-semibold ${
                   isEditing ? 'bg-red-400' : 'bg-lime-500'
                 } text-white`}
               >
@@ -119,33 +125,39 @@ function UpdateFurniture() {
               <div className="grid lg:grid-cols-2">
                 {/* Furniture */}
                 <div className="mt-4">
-                  <div>Furniture Name</div>
-                  <input
-                    {...register("furniturename")}
+                  <div>Furniture</div>
+                  <select
+                    {...register("furnitureid")}
                     disabled={!isEditing}
                     className="px-2 py-2 w-4/5 rounded-xl bg-inputColor"
-                  />
-               
-                  <p className="text-red-500 text-sm">{errors.furniturename?.message}</p>
+                  >
+                    <option value="">Select Furniture</option>
+                    {furnitureList.map((f) => (
+                      <option key={f.furnitureid} value={f.furnitureid}>
+                        {f.furniturename}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-red-500 text-sm">{errors.furnitureid?.message}</p>
                 </div>
 
                 {/* Import Date */}
                 <div className="mt-4">
-                  <div>Type</div>
+                  <div>Export Date</div>
                   <input
-                    type="text"
-                    {...register("type")}
+                    type="datetime-local"
+                    {...register("expdate")}
                     disabled={!isEditing}
                     className="px-2 py-2 w-4/5 rounded-xl bg-inputColor"
                   />
-                  <p className="text-red-500 text-sm">{errors.type?.message}</p>
+                  <p className="text-red-500 text-sm">{errors.expdate?.message}</p>
                 </div>
 
                 {/* Quantity */}
                 <div className="mt-4">
                   <div>Quantity</div>
                   <input
-                    type="number"
+                    type="text"
                     {...register("quantity")}
                     disabled={!isEditing}
                     className="px-2 py-2 w-4/5 rounded-xl bg-inputColor"
@@ -153,16 +165,16 @@ function UpdateFurniture() {
                   <p className="text-red-500 text-sm">{errors.quantity?.message}</p>
                 </div>
 
-                {/* status */}
+                {/* destination */}
                 <div className="mt-4">
-                  <div>Status</div>
+                  <div>destination</div>
                   <input
                     type="text"
-                    {...register("status")}
+                    {...register("destination")}
                     disabled={!isEditing}
                     className="px-2 py-2 w-4/5 rounded-xl bg-inputColor"
                   />
-                  <p className="text-red-500 text-sm">{errors.status?.message}</p>
+                  <p className="text-red-500 text-sm">{errors.destination?.message}</p>
                 </div>
 
                 {/* Manager */}
@@ -174,7 +186,7 @@ function UpdateFurniture() {
                     className="px-2 py-2 w-4/5 rounded-xl bg-inputColor"
                   >
                     <option value="">Select Manager</option>
-                    
+
                     {managerList.map((m) => (
                       <option key={m.managerid} value={m.managerid}>
                         {m.fullname}
@@ -188,19 +200,18 @@ function UpdateFurniture() {
               <div className="mt-4 flex gap-4">
                 <input
                   type="checkbox"
-                   {...register("confirmUpdate")}
+                  {...register("confirmUpdate")}
                   disabled={!isEditing}
                 />
-                <div className="capitalize">Do Agree  to update this furniture data?</div>
+                <div className="capitalize">Agree to update Export Info</div>
               </div>
-               <p className="text-red-500 text-sm">{errors.confirmUpdate?.message}</p> 
-
+              <p className="text-red-500 text-sm">{errors.confirmUpdate?.message}</p> 
               <button
                 type="submit"
                 disabled={!isEditing}
-                className="mt-12 text-center px-2 py-2 w-4/5 lg:w-2/4 lg:ml-24 rounded-xl cursor-pointer bg-skyHover duration-300 ease-in text-white font-bold text-xl hover:bg-skyBlue disabled:opacity-50"
+                className="mt-12 text-center px-2 lg: py-2 w-4/5 lg:w-1/2 lg:ml-32 rounded-xl cursor-pointer bg-skyHover duration-300 ease-in text-white font-bold text-xl hover:bg-skyBlue disabled:opacity-50"
               >
-                Edit furniture
+                Update export
               </button>
             </form>
           </div>
@@ -218,4 +229,4 @@ function UpdateFurniture() {
   );
 }
 
-export default UpdateFurniture;
+export default ModifyExport;

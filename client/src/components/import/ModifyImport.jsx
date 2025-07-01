@@ -3,7 +3,7 @@ import Header from '../manager/Header';
 import Footer from '../manager/ManagerFooter';
 import Navigation from '../manager/Navigation';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import LoadingScreen from '../Loading';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -18,7 +18,7 @@ function ModifyImport() {
   const [isEditing, setIsEditing] = useState(false);
   const [furnitureList, setFurnitureList] = useState([]);
   const [managerList, setManagerList] = useState([]);
-
+  const navigate = useNavigate()
   const URL = import.meta.env.VITE_GET_ALL_IMPORT;
   const FURN_URL = import.meta.env.VITE_GET_ALL_FURNITURE;
   const MGR_URL = import.meta.env.VITE_GET_ALL_MANAGER;
@@ -33,7 +33,7 @@ function ModifyImport() {
       .required("Quantity is required"),
     supplier: yup.string().required("Supplier is required"),
     managerid: yup.string().required("Please select a manager"),
-    // confirmUpdate: yup.boolean().oneOf([true], "You must agree before updating"),
+    confirmUpdate: yup.boolean().oneOf([true], "You must agree before updating"),
   });
 
   const {
@@ -77,7 +77,6 @@ function ModifyImport() {
   const onSubmit = async (data) => {
     try {
         const payload = {
-        importid: parseInt(id),
         furnitureid: parseInt(data.furnitureid),
         impdate: data.impdate,
         quantity: parseInt(data.quantity),
@@ -86,6 +85,9 @@ function ModifyImport() {
         };
       await axios.put(`${URL}/${id}`, payload);
       toast.success("Import updated successfully!");
+      setTimeout(()=>{
+      navigate('/import')
+      },6000)
     } catch (err) {
       console.error("Update error:", err);
       toast.error("Failed to update import");
@@ -111,7 +113,7 @@ function ModifyImport() {
               <h1 className="text-center font-bold text-2xl">Modify Imported Furniture</h1>
               <button
                 onClick={() => setIsEditing(!isEditing)}
-                className={`px-4 py-2 rounded-lg font-semibold ${
+                className={`px-4 py-2 w-2/4 ml-24 md:w-32 lg:w-48 rounded-lg font-semibold ${
                   isEditing ? 'bg-red-400' : 'bg-lime-500'
                 } text-white`}
               >
@@ -155,7 +157,7 @@ function ModifyImport() {
                 <div className="mt-4">
                   <div>Quantity</div>
                   <input
-                    type="number"
+                    type="text"
                     {...register("quantity")}
                     disabled={!isEditing}
                     className="px-2 py-2 w-4/5 rounded-xl bg-inputColor"
@@ -184,7 +186,7 @@ function ModifyImport() {
                     className="px-2 py-2 w-4/5 rounded-xl bg-inputColor"
                   >
                     <option value="">Select Manager</option>
-                    
+
                     {managerList.map((m) => (
                       <option key={m.managerid} value={m.managerid}>
                         {m.fullname}
@@ -198,13 +200,12 @@ function ModifyImport() {
               <div className="mt-4 flex gap-4">
                 <input
                   type="checkbox"
-                //   {...register("confirmUpdate")}
+                  {...register("confirmUpdate")}
                   disabled={!isEditing}
                 />
                 <div className="capitalize">Agree to update this import data</div>
               </div>
-              {/* <p className="text-red-500 text-sm">{errors.confirmUpdate?.message}</p> */}
-
+              <p className="text-red-500 text-sm">{errors.confirmUpdate?.message}</p> 
               <button
                 type="submit"
                 disabled={!isEditing}
