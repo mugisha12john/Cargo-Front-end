@@ -21,7 +21,6 @@ function App() {
     <BrowserRouter>
     <Routes>
       <Route path="/" element={<Homepage/>} />
-      <Route path="*" element={<NotFound/>} />
       <Route path="/home" element={<Homepage/>} />
       <Route path="/load" element={<LoadingScreen/>} />
       <Route path="/login" element={<LoginPage/>} />
@@ -42,6 +41,7 @@ function App() {
       <Route path="/export" element={<AllExport/>} />  
       <Route path="/export/modify/:id" element={<ModifyExport/>} />
       <Route path="/export/add" element={<AddExport/>} />  
+      <Route path="*" element={<NotFound/>} />
     </Routes>
     </BrowserRouter>
     </>
